@@ -1,24 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FaArrowLeft, FaPlus, FaBars, FaTimes, FaCog } from 'react-icons/fa';
-
-const mockCourse = {
-  name: 'Mathematics',
-  description: 'Algebra, Calculus & Geometry',
-};
-
-const mockTopics = [
-  { id: 1, title: 'Quadratic Equations', date: 'Oct 6, 2026' },
-  { id: 2, title: 'Linear Functions', date: 'Oct 8, 2026' },
-  { id: 3, title: 'Trigonometry Basics', date: 'Oct 10, 2026' },
-  { id: 4, title: 'Calculus Introduction', date: 'Oct 12, 2026' },
-  { id: 5, title: 'Geometry: Circles', date: 'Oct 14, 2026' },
-];
 
 export default function TopicsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const subjectId = searchParams.get('id') || '1'; // Default to 1 for now
+  
+  const [subject, setSubject] = useState<{ name: string; description: string } | null>(null);
+  const [topics, setTopics] = useState<any[]>([]);
+  const [notes, setNotes] = useState<any[]>([]);
+  const [materials, setMaterials] = useState<any[]>([]);
+  const [schedules, setSchedules] = useState<any[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [day, setDay] = useState('');
@@ -34,6 +29,23 @@ export default function TopicsPage() {
   const [noteTitle, setNoteTitle] = useState('');
   const [noteContent, setNoteContent] = useState('');
 
+  // Fetch data from API
+  useEffect(() => {
+    // Fetch subject
+    fetch(`/api/subjects?id=${subjectId}`)
+      .then(res => res.json())
+      .then(data => setSubject(data))
+      .catch(err => console.error('Failed to fetch subject:', err));
+
+    // Fetch topics
+    fetch(`/api/topics?subjectId=${subjectId}`)
+      .then(res => res.json())
+      .then(data => setTopics(data || []))
+      .catch(err => console.error('Failed to fetch topics:', err));
+
+    // TODO: Fetch notes, materials, schedules when API routes exist
+  }, [subjectId]);
+
   return (
     <div className="min-h-screen bg-white text-black">
       <header className="border-b border-black/10">
@@ -45,8 +57,8 @@ export default function TopicsPage() {
             <FaArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold tracking-tight">{mockCourse.name}</h1>
-            <p className="text-sm text-black/40">{mockCourse.description}</p>
+            <h1 className="text-2xl font-bold tracking-tight">{subject?.name || 'Loading...'}</h1>
+            <p className="text-sm text-black/40">{subject?.description || ''}</p>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -79,14 +91,14 @@ export default function TopicsPage() {
         >
           <h2 className="text-lg font-bold mb-4">Topics</h2>
           <div className="space-y-2 flex-1">
-            {mockTopics.map((topic) => (
+            {topics.map((topic) => (
               <div
                 key={topic.id}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer"
               >
                 <h3 className="text-sm font-medium text-black">{topic.title}</h3>
-                <p className="text-xs text-black/30 mt-1">{topic.date}</p>
+                <p className="text-xs text-black/30 mt-1">{new Date(topic.created_at).toLocaleDateString()}</p>
               </div>
             ))}
           </div>

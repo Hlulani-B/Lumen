@@ -1,24 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaArrowLeft, FaPlus } from 'react-icons/fa';
 
-const mockSubjects = [
-  { id: 1, name: 'Mathematics', description: 'Algebra, Calculus & Geometry', created_at: 'Oct 1, 2026' },
-  { id: 2, name: 'Biology', description: 'Cell Biology & Ecology', created_at: 'Oct 2, 2026' },
-  { id: 3, name: 'Physics', description: 'Mechanics & Thermodynamics', created_at: 'Oct 3, 2026' },
-  { id: 4, name: 'Chemistry', description: 'Organic & Inorganic Chemistry', created_at: 'Oct 4, 2026' },
-  { id: 5, name: 'English', description: 'Literature & Language', created_at: 'Oct 5, 2026' },
-];
-
 export default function SubjectsPage() {
   const router = useRouter();
+  const [subjects, setSubjects] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Fetch subjects from API
+  useEffect(() => {
+    fetch('/api/subjects')
+      .then(res => res.json())
+      .then(data => setSubjects(data || []))
+      .catch(err => console.error('Failed to fetch subjects:', err));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +51,12 @@ export default function SubjectsPage() {
       setName('');
       setDescription('');
       setShowModal(false);
+      
+      // Refresh subjects list
+      fetch('/api/subjects')
+        .then(res => res.json())
+        .then(data => setSubjects(data || []))
+        .catch(err => console.error('Failed to refresh subjects:', err));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -81,10 +88,10 @@ export default function SubjectsPage() {
 
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {mockSubjects.map((subject: typeof mockSubjects[number]) => (
+          {subjects.map((subject: any) => (
             <div
               key={subject.id}
-              onClick={() => router.push('/home/topics')}
+              onClick={() => router.push(`/home/topics?id=${subject.id}`)}
               className="border border-black/10 rounded-xl p-5 shadow-md hover:shadow-lg hover:border-black/30 transition-all cursor-pointer"
             >
               <h4 className="text-base font-bold text-black mb-1">{subject.name}</h4>

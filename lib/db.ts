@@ -15,7 +15,7 @@ export function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       description TEXT,
-      color TEXT DEFAULT '#3B82F6',
+      color TEXT DEFAULT '#fbfcffff',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
