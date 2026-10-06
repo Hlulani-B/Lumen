@@ -91,16 +91,23 @@ export default function TopicsPage() {
         >
           <h2 className="text-lg font-bold mb-4">Topics</h2>
           <div className="space-y-2 flex-1">
-            {topics.map((topic) => (
-              <div
-                key={topic.id}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer"
-              >
-                <h3 className="text-sm font-medium text-black">{topic.title}</h3>
-                <p className="text-xs text-black/30 mt-1">{new Date(topic.created_at).toLocaleDateString()}</p>
+            {topics.length === 0 ? (
+              <div className="border border-black/10 rounded-lg p-6 text-center">
+                <p className="text-black/40 text-sm">No topics yet</p>
+                <p className="text-black/30 text-xs mt-2">Add topics in Settings</p>
               </div>
-            ))}
+            ) : (
+              topics.map((topic) => (
+                <div
+                  key={topic.id}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer"
+                >
+                  <h3 className="text-sm font-medium text-black">{topic.title}</h3>
+                  <p className="text-xs text-black/30 mt-1">{new Date(topic.created_at).toLocaleDateString()}</p>
+                </div>
+              ))
+            )}
           </div>
           <button
             onClick={() => router.push('/home/subjects/settings?id=1')}
@@ -126,29 +133,24 @@ export default function TopicsPage() {
               </button>
             </div>
             <div className="border border-black/20 rounded-xl p-5 shadow-sm">
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium">Monday</p>
-                    <p className="text-xs text-black/40">Room 101</p>
-                  </div>
-                  <p className="text-sm text-black/60">09:00 - 10:30</p>
+              {schedules.length === 0 ? (
+                <div className="text-center py-6">
+                  <p className="text-black/40 text-sm">No schedules yet</p>
+                  <p className="text-black/30 text-xs mt-2">Click the + button to add a schedule</p>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium">Wednesday</p>
-                    <p className="text-xs text-black/40">Room 203</p>
-                  </div>
-                  <p className="text-sm text-black/60">14:00 - 15:30</p>
+              ) : (
+                <div className="space-y-3">
+                  {schedules.map((schedule) => (
+                    <div key={schedule.id} className="flex justify-between items-center">
+                      <div>
+                        <p className="text-sm font-medium">{schedule.day_of_week}</p>
+                        <p className="text-xs text-black/40">{schedule.location || 'No location'}</p>
+                      </div>
+                      <p className="text-sm text-black/60">{schedule.start_time} - {schedule.end_time}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm font-medium">Friday</p>
-                    <p className="text-xs text-black/40">Online</p>
-                  </div>
-                  <p className="text-sm text-black/60">11:00 - 12:30</p>
-                </div>
-              </div>
+              )}
             </div>
           </section>
 
@@ -164,14 +166,19 @@ export default function TopicsPage() {
               </button>
             </div>
             <div className="space-y-3">
-              <div className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
-                <p className="text-sm font-medium">Key Formulas</p>
-                <p className="text-xs text-black/40 mt-1">Updated: Oct 5, 2026</p>
-              </div>
-              <div className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
-                <p className="text-sm font-medium">Study Summary</p>
-                <p className="text-xs text-black/40 mt-1">Updated: Oct 4, 2026</p>
-              </div>
+              {notes.length === 0 ? (
+                <div className="border border-black/10 rounded-lg p-6 text-center">
+                  <p className="text-black/40 text-sm">No notes yet</p>
+                  <p className="text-black/30 text-xs mt-2">Click the + button to add a note</p>
+                </div>
+              ) : (
+                notes.map((note) => (
+                  <div key={note.id} className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
+                    <p className="text-sm font-medium">{note.title}</p>
+                    <p className="text-xs text-black/40 mt-1">Updated: {new Date(note.updated_at).toLocaleDateString()}</p>
+                  </div>
+                ))
+              )}
             </div>
           </section>
 
@@ -187,18 +194,19 @@ export default function TopicsPage() {
               </button>
             </div>
             <div className="space-y-3">
-              <div className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
-                <p className="text-sm font-medium">Chapter 1: Introduction to Algebra</p>
-                <p className="text-xs text-black/40 mt-1">PDF • 2.3 MB</p>
-              </div>
-              <div className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
-                <p className="text-sm font-medium">Practice Problems Set 1</p>
-                <p className="text-xs text-black/40 mt-1">PDF • 1.1 MB</p>
-              </div>
-              <div className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
-                <p className="text-sm font-medium">Video: Quadratic Equations Explained</p>
-                <p className="text-xs text-black/40 mt-1">MP4 • 45 min</p>
-              </div>
+              {materials.length === 0 ? (
+                <div className="border border-black/10 rounded-lg p-6 text-center">
+                  <p className="text-black/40 text-sm">No materials yet</p>
+                  <p className="text-black/30 text-xs mt-2">Click the + button to add a material</p>
+                </div>
+              ) : (
+                materials.map((material) => (
+                  <div key={material.id} className="border border-black/10 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-black/30 transition-all cursor-pointer">
+                    <p className="text-sm font-medium">{material.name}</p>
+                    <p className="text-xs text-black/40 mt-1">{material.type.toUpperCase()} • {material.size || 'Unknown size'}</p>
+                  </div>
+                ))
+              )}
             </div>
           </section>
         </main>

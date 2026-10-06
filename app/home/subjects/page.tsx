@@ -87,18 +87,25 @@ export default function SubjectsPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {subjects.map((subject: any) => (
-            <div
-              key={subject.id}
-              onClick={() => router.push(`/home/topics?id=${subject.id}`)}
-              className="border border-black/10 rounded-xl p-5 shadow-md hover:shadow-lg hover:border-black/30 transition-all cursor-pointer"
-            >
-              <h4 className="text-base font-bold text-black mb-1">{subject.name}</h4>
-              <p className="text-sm text-black/40">{subject.description}</p>
-            </div>
-          ))}
-        </div>
+        {subjects.length === 0 ? (
+          <div className="border border-black/10 rounded-xl p-12 text-center">
+            <p className="text-black/40 text-base mb-2">No subjects yet</p>
+            <p className="text-black/30 text-sm">Click the + button to create your first subject</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {subjects.map((subject: any) => (
+              <div
+                key={subject.id}
+                onClick={() => router.push(`/home/topics?id=${subject.id}`)}
+                className="border border-black/10 rounded-xl p-5 shadow-md hover:shadow-lg hover:border-black/30 transition-all cursor-pointer"
+              >
+                <h4 className="text-base font-bold text-black mb-1">{subject.name}</h4>
+                <p className="text-sm text-black/40">{subject.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
 
       {/* Add Subject Modal */}
